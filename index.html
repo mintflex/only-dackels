@@ -27,33 +27,32 @@
     <script>
         // JavaScript code to fetch and display dachshund photos from Unsplash Source API
         const photoContainer = document.getElementById('photoContainer');
-        let imagesLoaded = 0;
+        let page = 1; // Initialize the page counter
 
         // Load images in batches of 20 as user scrolls down
         window.addEventListener('scroll', () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                loadImages(20);
+                loadImages();
             }
         });
 
         // Function to load images
-        function loadImages(count) {
-            for (let i = 0; i < count; i++) {
-                fetch(`https://source.unsplash.com/200x200/?dachshund&${++imagesLoaded}`, { cache: 'reload' })
-                    .then(response => {
-                        const img = document.createElement('img');
-                        img.src = response.url;
-                        img.alt = 'Dachshund Photo';
-                        photoContainer.appendChild(img);
-                    })
-                    .catch(error => {
-                        console.error('Failed to fetch dachshund photos:', error);
-                    });
-            }
+        function loadImages() {
+            fetch(`https://source.unsplash.com/200x200/?dachshund&page=${page}`, { cache: 'reload' })
+                .then(response => {
+                    const img = document.createElement('img');
+                    img.src = response.url;
+                    img.alt = 'Dachshund Photo';
+                    photoContainer.appendChild(img);
+                    page++; // Increment the page counter for the next batch of images
+                })
+                .catch(error => {
+                    console.error('Failed to fetch dachshund photos:', error);
+                });
         }
 
         // Call the loadImages function initially
-        loadImages(5);
+        loadImages();
     </script>
 </body>
 </html>
