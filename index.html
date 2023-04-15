@@ -47,26 +47,12 @@
     </div>
 
     <script>
-        // JavaScript code to fetch and display dachshund photos from Lorem Picsum API
+        // JavaScript code to fetch and display dachshund photos from Unsplash Source API
         const photoContainer = document.getElementById('photoContainer');
         const jokesContainer = document.getElementById('jokesContainer');
-        let photos = [];
         let jokes = [];
         let currentIndex = 0;
         let jokeIndex = 0;
-
-        // Fetch 1000 dachshund photos from Lorem Picsum API
-        fetch('https://picsum.photos/v2/list?limit=1000&query=dachshund')
-            .then(response => response.json())
-            .then(data => {
-                // Filter only the photos with 'dachshund' in their author field
-                photos = data.filter(photo => photo.author.toLowerCase().includes('dachshund'));
-                // Load initial set of 20 images
-                loadImages();
-            })
-            .catch(error => {
-                console.error('Failed to fetch dachshund photos:', error);
-            });
 
         // Fetch dachshund jokes from JokeAPI
         fetch('https://v2.jokeapi.dev/joke/Dachshund?type=twopart')
@@ -87,25 +73,32 @@
 
         // Function to load images
         function loadImages() {
-            const batch = photos.slice(currentIndex, currentIndex + 20);
-            batch.forEach(photo => {
-                const img = document.createElement('img');
-                img.src = photo.download_url;
-                photoContainer.appendChild(img);
-            });
-            currentIndex += 20;
-            // Display joke
-            const joke = jokes[jokeIndex];
-            const jokeText = document.createElement('p');
-            jokeText.textContent = joke.setup + ' ' + joke.delivery;
-            jokesContainer.appendChild(jokeText);
-            jokeIndex++;
-            // Reset joke index when all jokes are displayed
-            if (jokeIndex === jokes.length) {
-                jokeIndex = 0;
-            }
+            fetch('https://source.unsplash.com/200x200/?dachshund', { cache: 'reload' })
+                .then(response => {
+                    const img = document.createElement('img');
+                    img.src = response.url;
+                    img.alt = 'Dachshund Photo';
+                    photoContainer.appendChild(img);
+                })
+                .catch(error => {
+                    console.error('Failed to fetch dachshund photos:', error);
+                });
         }
+
+        // Display jokes in a rotating manner
+        function displayJokes() {
+            const joke = jokes[jokeIndex];
+            const jokeElement = document.createElement('p');
+            jokeElement.textContent = joke.setup + ' ' + joke.delivery;
+            jokesContainer.appendChild(jokeElement);
+            jokeIndex = (jokeIndex + 1) % jokes.length;
+        }
+
+        // Call the displayJokes function initially
+        displayJokes();
+
+        // Display jokes at an interval of 5 seconds
+        setInterval(displayJokes, 5000);
     </script>
 </body>
 </html>
-
