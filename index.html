@@ -1,69 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Only Dackels</title>
-    <style>
-      /* Your styles here */
-    </style>
-  </head>
-  <body>
-    <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
-    <div class="photo-container" id="photoContainer"></div>
-    <div class="facts-container" id="factsContainer"></div>
-    <script>
-      const photoContainer = document.getElementById('photoContainer');
-      const factsContainer = document.getElementById('factsContainer');
-      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
-      let photos = new Set();
-      let facts = [
-        "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
-        "Dachshunds come in three different coat varieties: smooth, wirehaired, and longhaired.",
-        "Dachshunds are known for their long bodies and short legs.",
-        "Dachshunds are intelligent and independent dogs that can be stubborn at times.",
-        "Dachshunds are loyal and affectionate companions that make great family pets.",
-        "Dachshunds have a keen sense of smell and are often used in scent work and tracking activities.",
-        "Dachshunds are prone to certain health issues such as back problems and obesity.",
-        "Dachshunds are active dogs that require regular exercise and mental stimulation to stay healthy and happy.",
-        "Dachshunds have a long lifespan and can live up to 16 years or more with proper care."
-      ];
+<head>
+  <title>Only Dackels</title>
+  <style>
+    /* Your styles here */
+  </style>
+</head>
+<body>
+<div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
+<div class="photo-container" id="photoContainer"></div>
+<div class="facts-container" id="factsContainer"></div>
+<script>
+  const photoContainer = document.getElementById('photoContainer');
+  const factsContainer = document.getElementById('factsContainer');
+  const photoUrl = `https://api.thedogapi.com/v1/images/search?breed_id=104&mime_types=jpg,png&size=small&limit=1&api_key=live_4dB8N0LRIBR0TulDHGZopahzMUalri888l2thVFKMZXHuWMtEZEoIaWqSvjR4hxF`;
+  let photos = new Set();
+  let facts = [
+    "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
+    "Dachshunds come in three different coat varieties: smooth, wirehaired, and longhaired.",
+    "Dachshunds are known for their long bodies and short legs.",
+    "Dachshunds are intelligent and independent dogs that can be stubborn at times.",
+    "Dachshunds are loyal and affectionate companions that make great family pets.",
+    "Dachshunds have a keen sense of smell and are often used in scent work and tracking activities.",
+    "Dachshunds are prone to certain health issues such as back problems and obesity.",
+    "Dachshunds are active dogs that require regular exercise and mental stimulation to stay healthy and happy.",
+    "Dachshunds have a long lifespan and can live up to 16 years or more with proper care."
+  ];
 
-      async function fetchImages(url) {
-        try {
-          const response = await fetch(url);
-          const data = await response.json();
+  async function fetchImages(url) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
 
-          if (!photos.has(data.message)) {
-            photos.add(data.message);
-            const img = document.createElement('img');
-            img.src = data.message;
-            photoContainer.appendChild(img);
-          }
-        } catch (error) {
-          console.error('Failed to fetch dachshund photos:', error);
-        }
+      if (!photos.has(data[0].url)) {
+        photos.add(data[0].url);
+        const img = document.createElement('img');
+        img.src = data[0].url;
+        photoContainer.appendChild(img);
       }
+    } catch (error) {
+      console.error('Failed to fetch dachshund photos:', error);
+    }
+  }
 
-      async function loadMore() {
-        while (true) {
-          await fetchImages(photoUrl);
-          updateFact();
-        }
-      }
+  async function loadMore() {
+    while (true) {
+      await fetchImages(photoUrl);
+      updateFact();
+    }
+  }
 
-      function updateFact() {
-        factsContainer.innerHTML = '';
-        const fact = document.createElement('p');
-        fact.innerText = facts[Math.floor(Math.random() * facts.length)];
-        factsContainer.appendChild(fact);
-      }
+  function updateFact() {
+    factsContainer.innerHTML = '';
+    const fact = document.createElement('p');
+    fact.innerText = facts[Math.floor(Math.random() * facts.length)];
+    factsContainer.appendChild(fact);
+  }
 
-      window.addEventListener('scroll', async () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-          loadMore();
-        }
-      });
-
+  window.addEventListener('scroll', async () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
       loadMore();
-    </script>
-  </body>
+    }
+  });
+
+  loadMore();
+</script>
+</body>
 </html>
