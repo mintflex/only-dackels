@@ -19,50 +19,14 @@
             object-fit: cover;
             margin: 5px;
         }
-
-        /* Define styles for the jokes section on the side */
-        .jokes-container {
-            position: fixed;
-            top: 0;
-            right: 0;
-            padding: 20px;
-            background-color: #f8f8f8;
-            width: 200px;
-        }
-
-        /* Define styles for the jokes text */
-        .jokes-container p {
-            margin: 0 0 10px;
-            font-style: italic;
-            color: #666;
-        }
     </style>
 </head>
 <body>
     <div class="photo-container" id="photoContainer"></div>
-    <div class="jokes-container" id="jokesContainer">
-        <!-- Add your dachshund jokes here as <p> tags -->
-        <p>Why don't dachshunds trust stairs? Because they're always up to something!</p>
-        <!-- Add more dachshund jokes as needed -->
-    </div>
 
     <script>
         // JavaScript code to fetch and display dachshund photos from Unsplash Source API
         const photoContainer = document.getElementById('photoContainer');
-        const jokesContainer = document.getElementById('jokesContainer');
-        let jokes = [];
-        let currentIndex = 0;
-        let jokeIndex = 0;
-
-        // Fetch dachshund jokes from JokeAPI
-        fetch('https://v2.jokeapi.dev/joke/Dachshund?type=twopart')
-            .then(response => response.json())
-            .then(data => {
-                jokes = data.jokes;
-            })
-            .catch(error => {
-                console.error('Failed to fetch dachshund jokes:', error);
-            });
 
         // Load images in batches of 20 as user scrolls down
         window.addEventListener('scroll', () => {
@@ -85,20 +49,8 @@
                 });
         }
 
-        // Display jokes in a rotating manner
-        function displayJokes() {
-            const joke = jokes[jokeIndex];
-            const jokeElement = document.createElement('p');
-            jokeElement.textContent = joke.setup + ' ' + joke.delivery;
-            jokesContainer.appendChild(jokeElement);
-            jokeIndex = (jokeIndex + 1) % jokes.length;
-        }
-
-        // Call the displayJokes function initially
-        displayJokes();
-
-        // Display jokes at an interval of 5 seconds
-        setInterval(displayJokes, 5000);
+        // Call the loadImages function initially
+        loadImages();
     </script>
 </body>
 </html>
