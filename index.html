@@ -47,7 +47,10 @@
     <script>
       const photoContainer = document.getElementById('photoContainer');
       const factsContainer = document.getElementById('factsContainer');
-      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
+      let photoUrls = [
+          `https://dog.ceo/api/breed/dachshund/images/random`
+      ];
+      let currentApiIndex = 0;
       let photos = [];
       let facts = [
           "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
@@ -63,13 +66,13 @@
       ];
       let currentIndex = 0;
       let factIndex = 0;
-      for (let i = 0; i < 50; i++) {
-        fetchImages(photoUrl);
+      for (let i = 0; i < 50; i++) {                                                                                                                                                                 
+        fetchImages(photoUrls[currentApiIndex]);
       }
       window.addEventListener('scroll', () => {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
           for (let i = 0; i < 10; i++) {
-            fetchImages(photoUrl);
+            fetchImages(photoUrls[currentApiIndex]);
           }
           currentIndex += 10;
           if (currentIndex % 100 === 0 && factIndex < facts.length) {
@@ -84,6 +87,10 @@
               factsContainer.style.left = '20px';
               factsContainer.style.right = 'auto';
             }
+          }
+          // Switch to another API when no more images are available
+          if (photos.length === currentIndex) {
+            photoUrl = `https://another-api.com/random-dachshund-image`;
           }
         }
       });
