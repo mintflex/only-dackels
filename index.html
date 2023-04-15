@@ -15,8 +15,9 @@
       }
       .photo-container {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         align-items: center;
+        justify-content: center;
         padding: 10px;
       }
       .photo-container img {
@@ -47,10 +48,7 @@
     <script>
       const photoContainer = document.getElementById('photoContainer');
       const factsContainer = document.getElementById('factsContainer');
-      let photoUrls = [
-          `https://dog.ceo/api/breed/dachshund/images/random`
-      ];
-      let currentApiIndex = 0;
+      const apiUrl = 'https://dog.ceo/api/breed/dachshund/images/random';
       let photos = [];
       let facts = [
           "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
@@ -66,23 +64,24 @@
       ];
       let currentIndex = 0;
       let factIndex = 0;
-      for (let i = 0; i < 50; i++) {                                                                                                                                                                 
-        fetchImages(photoUrls[currentApiIndex]);
-      }
-      window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-          for (let i = 0; i < 10; i++) {
-            fetchImages(photoUrls[currentApiIndex]);
-          }
-          currentIndex += 10;
-          if (currentIndex % 100 === 0 && factIndex < facts.length) {
-            const fact = document.createElement('p');
-            fact.innerText = facts[factIndex];
-            factsContainer.appendChild(fact);
-            factIndex++;
-            if (factIndex % 2 === 0) {
-              factsContainer.style.right = '20px';
-              factsContainer.style.left = 'auto';
+      function fetchImages() {
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            if (!photos.includes(data.message)) {
+              photos.push(data.message);
+              const img = document.createElement('img');
+              img.src = data.message;
+              photoContainer.appendChild(img);
+              currentIndex++;
+              if (currentIndex % 100 === 0 && factIndex < facts.length) {
+                const fact = document.createElement('p');
+                fact.innerText = facts[factIndex];
+                factsContainer.appendChild(fact);
+                factIndex++;
+                if (factIndex % 2 === 0) {
+                  factsContainer.style.right = '20px';
+                  factsContainer.style.left = 'auto';
             } else {
               factsContainer.style.left = '20px';
               factsContainer.style.right = 'auto';
