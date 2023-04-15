@@ -27,34 +27,33 @@
     <script>
         // JavaScript code to fetch and display dachshund photos from Unsplash Source API
         const photoContainer = document.getElementById('photoContainer');
-        let page = 1; // Variable to keep track of current page number
+        let imagesLoaded = 0;
 
         // Load images in batches of 20 as user scrolls down
         window.addEventListener('scroll', () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                loadImages();
+                loadImages(20);
             }
         });
 
         // Function to load images
-        function loadImages() {
-            fetch(`https://source.unsplash.com/200x200/?dachshund&page=${page}`, { cache: 'reload' })
-                .then(response => {
-                    const img = document.createElement('img');
-                    img.src = response.url;
-                    img.alt = 'Dachshund Photo';
-                    photoContainer.appendChild(img);
-                })
-                .catch(error => {
-                    console.error('Failed to fetch dachshund photos:', error);
-                });
-
-            // Increment the page number for the next batch of images
-            page++;
+        function loadImages(count) {
+            for (let i = 0; i < count; i++) {
+                fetch(`https://source.unsplash.com/200x200/?dachshund&${++imagesLoaded}`, { cache: 'reload' })
+                    .then(response => {
+                        const img = document.createElement('img');
+                        img.src = response.url;
+                        img.alt = 'Dachshund Photo';
+                        photoContainer.appendChild(img);
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch dachshund photos:', error);
+                    });
+            }
         }
 
         // Call the loadImages function initially
-        loadImages();
+        loadImages(5);
     </script>
 </body>
 </html>
