@@ -53,8 +53,8 @@
         let page = 1;
         const perPage = 20;
 
-        // Fetch 1000 dachshund photos from Lorem Picsum API
-        const photoUrl = 'https://picsum.photos/v2/list?limit=1000&page=${page}&query=dachshund';
+        // Fetch dachshund photos from Unsplash API
+        const photoUrl = 'https://source.unsplash.com/200x200/?dachshund&page=${page}&per_page=${perPage}';
         fetchImages(photoUrl);
 
         // Load images in batches of 20 as user scrolls down
@@ -68,16 +68,12 @@
         // Function to fetch and load images
         function fetchImages(url) {
             fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    photos = photos.concat(data);
-                    const batch = photos.slice(currentIndex, currentIndex + perPage);
-                    batch.forEach(photo => {
+                .then(response => {
+                    for (let photo of response.urls) {
                         const img = document.createElement('img');
-                        img.src = photo.download_url;
+                        img.src = photo;
                         photoContainer.appendChild(img);
-                    });
-                    currentIndex += perPage;
+                    }
                 })
                 .catch(error => {
                     console.error('Failed to fetch dachshund photos:', error);
@@ -90,6 +86,7 @@
                 jokesContainer.appendChild(joke);
                 jokeIndex++;
             }
+            currentIndex += perPage;
         }
 
         // Fetch dachshund jokes from JokeAPI
