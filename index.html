@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Only Dackels - Infinite Dachshund Photos</title>
+    <style>
+      body {
+        background-color: black;
+        background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+      }
+      .title-banner {
+        font-size: 36px;
+        color: white;
+        text-align: center;
+        margin: 20px;
+      }
+      .photo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+      }
+      .photo-container img {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        margin: 5px;
+      }
+      .facts-container {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        width: 200px;
+      }
+      .facts-container p {
+        margin: 0 0 10px;
+        font-style: italic;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
+    <div class="photo-container" id="photoContainer"></div>
+    <div class="facts-container" id="factsContainer"></div>
+    <script>
+      const photoContainer = document.getElementById('photoContainer');
+      const factsContainer = document.getElementById('factsContainer');
+      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
+      let photos = [];
+      let facts = [
+          "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
+          "Dachshunds come in three different coat varieties: smooth, wirehaired, and longhaired.",
+          "Dachshunds are known for their long bodies and short legs.",
+          "Dachshunds are one of the most popular dog breeds in the United States.",
+          "Dachshunds are intelligent and independent dogs that can be stubborn at times.",
+          "Dachshunds are loyal and affectionate companions that make great family pets.",
+          "Dachshunds have a keen sense of smell and are often used in scent work and tracking activities.",
+          "Dachshunds are prone to certain health issues such as back problems and obesity.",
+          "Dachshunds are active dogs that require regular exercise and mental stimulation to stay healthy and happy.",
+          "Dachshunds have a long lifespan and can live up to 16 years or more with proper care."
+      ];
+      let currentIndex = 0;
+      let factIndex = 0;
+      for (let i = 0; i < 50; i++) {
+        fetchImages(photoUrl);
+      }
+      window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+          fetchImages(photoUrl);
+          currentIndex++;
+          if (currentIndex % 100 === 0 && factIndex < facts.length) {
+            const fact = document.createElement('p');
+            fact.innerText = facts[factIndex];
+            factsContainer.appendChild(fact);
+            factIndex++;
+            if (factIndex % 2 === 0) {
+              factsContainer.style.right = '20px';
+              factsContainer.style.left = 'auto';
+            } else {
+              factsContainer.style.left = '20px';
+              factsContainer.style.right = 'auto';
+            }
+          }
+        }
+      });
+      function fetchImages(url) {
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            if (!photos.includes(data.message)) {
+              photos.push(data.message);
+              const img = document.createElement('img');
+              img.src = data.message;
+              photoContainer.appendChild(img);
+            }
+          })
+          .catch(error => {
+            console.error('Failed to fetch dachshund photos:', error);
+          });
+      }
+    </script>
+  </body>
+</html>
