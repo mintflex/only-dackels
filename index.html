@@ -13,8 +13,7 @@
     <script>
       const photoContainer = document.getElementById('photoContainer');
       const factsContainer = document.getElementById('factsContainer');
-      const apiKey = 'YOUR_API_KEY'; // Replace with your thedogapi.com API key
-      const photoUrl = `https://api.thedogapi.com/v1/images/search?breed_id=85&api_key=${apiKey}`;
+      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
       let photos = new Set();
       let facts = [
         "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
@@ -33,10 +32,10 @@
           const response = await fetch(url);
           const data = await response.json();
 
-          if (!photos.has(data[0].url)) {
-            photos.add(data[0].url);
+          if (!photos.has(data.message)) {
+            photos.add(data.message);
             const img = document.createElement('img');
-            img.src = data[0].url;
+            img.src = data.message;
             photoContainer.appendChild(img);
           }
         } catch (error) {
