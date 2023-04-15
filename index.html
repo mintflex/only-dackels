@@ -16,7 +16,6 @@
       .photo-container {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
         justify-content: center;
         padding: 10px;
       }
@@ -48,8 +47,8 @@
     <script>
       const photoContainer = document.getElementById('photoContainer');
       const factsContainer = document.getElementById('factsContainer');
-      const apiUrl = 'https://dog.ceo/api/breed/dachshund/images/random';
-      let photos = [];
+      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
+      let photos = new Set();
       let facts = [
           "Dachshunds were originally bred to hunt small animals like badgers and rabbits.",
           "Dachshunds come in three different coat varieties: smooth, wirehaired, and longhaired.",
@@ -62,52 +61,47 @@
           "Dachshunds are active dogs that require regular exercise and mental stimulation to stay healthy and happy.",
           "Dachshunds have a long lifespan and can live up to 16 years or more with proper care."
       ];
-      let currentIndex = 0;
-      let factIndex = 0;
-      function fetchImages() {
-        fetch(apiUrl)
-          .then(response => response.json())
-          .then(data => {
-            if (!photos.includes(data.message)) {
-              photos.push(data.message);
-              const img = document.createElement('img');
-              img.src = data.message;
-              photoContainer.appendChild(img);
-              currentIndex++;
-              if (currentIndex % 100 === 0 && factIndex < facts.length) {
-                const fact = document.createElement('p');
-                fact.innerText = facts[factIndex];
-                factsContainer.appendChild(fact);
-                factIndex++;
-                if (factIndex % 2 === 0) {
-                  factsContainer.style.right = '20px';
-                  factsContainer.style.left = 'auto';
-            } else {
-              factsContainer.style.left = '20px';
-              factsContainer.style.right = 'auto';
-            }
+
+      async function fetchImages(url) {
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (!photos.has(data.message) && photos.size < 5000) {
+            photos.add(data.message);
+            const img = document.createElement('img');
+            img.src = data.message;
+            photoContainer.appendChild(img);
           }
-          // Switch to another API when no more images are available
-          if (photos.length === currentIndex) {
-            photoUrl = `https://another-api.com/random-dachshund-image`;
+        } catch (error) {
+          console.error('Failed to fetch dachshund photos:', error);
+        }
+      }
+
+      async function initialLoad() {
+        for (let i = 0; i < 30; i++) {
+          await fetchImages(photoUrl);
+        }
+        updateFact();
+      }
+
+      function updateFact() {
+        factsContainer.innerHTML = '';
+        const fact = document.createElement('p');
+        fact.innerText = facts[Math.floor(Math.random() * facts.length)];
+        factsContainer.appendChild(fact);
+      }
+
+      window.addEventListener('scroll', async () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && photos.size < 5000) {
+          for (let i = 0; i < 10; i++) {
+            await fetchImages(photoUrl);
           }
+          updateFact();
         }
       });
-      function fetchImages(url) {
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            if (!photos.includes(data.message)) {
-              photos.push(data.message);
-              const img = document.createElement('img');
-              img.src = data.message;
-              photoContainer.appendChild(img);
-            }
-          })
-          .catch(error => {
-            console.error('Failed to fetch dachshund photos:', error);
-          });
-      }
+
+      initialLoad();
     </script>
   </body>
 </html>
