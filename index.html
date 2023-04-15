@@ -24,7 +24,7 @@
       const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
       fetchImages(photoUrl);
       window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
           fetchImages(photoUrl);
         }
       });
