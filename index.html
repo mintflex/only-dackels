@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Only Dackels - Infinite Dachshund Photos</title>
+    <style>
+        /* Define styles for the container that holds the photos */
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        /* Define styles for each photo */
+        .photo-container img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin: 5px;
+        }
+
+        /* Define styles for the jokes section on the side */
+        .jokes-container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            width: 200px;
+        }
+
+        /* Define styles for the jokes text */
+        .jokes-container p {
+            margin: 0 0 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="photo-container" id="photoContainer"></div>
+    <div class="jokes-container" id="jokesContainer">
+        <!-- Add your dachshund jokes here as <p> tags -->
+        <p>Why did the dachshund go to art school? Because he wanted to learn how to draw a wiener!</p>
+        <p>What's a dachshund's favorite game? Fetch, but only if it involves chasing squirrels!</p>
+        <p>Why did the dachshund start a band? Because he wanted to play the wienerophone!</p>
+        <!-- Add more dachshund jokes as needed -->
+    </div>
+
+    <script>
+        // JavaScript code to fetch and display dachshund photos from Lorem Picsum API
+        const photoContainer = document.getElementById('photoContainer');
+
+        // Fetch 1000 dachshund photos from Lorem Picsum API
+        fetch('https://picsum.photos/v2/list?limit=1000&query=dachshund')
+            .then(response => response.json())
+            .then(photos => {
+                // Loop through the fetched photos and create <img> tags to display them
+                photos.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = photo.download_url;
+                    photoContainer.appendChild(img);
+                });
+            })
+            .catch(error => {
+                console.error('Failed to fetch dachshund photos:', error);
+            });
+    </script>
+</body>
+</html>
