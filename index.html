@@ -42,30 +42,65 @@
     <div class="photo-container" id="photoContainer"></div>
     <div class="jokes-container" id="jokesContainer">
         <!-- Add your dachshund jokes here as <p> tags -->
-        <p>Why did the dachshund go to art school? Because he wanted to learn how to draw a wiener!</p>
-        <p>What's a dachshund's favorite game? Fetch, but only if it involves chasing squirrels!</p>
-        <p>Why did the dachshund start a band? Because he wanted to play the wienerophone!</p>
+        <p>Why don't dachshunds trust stairs? Because they're always up to something!</p>
         <!-- Add more dachshund jokes as needed -->
     </div>
 
     <script>
         // JavaScript code to fetch and display dachshund photos from Lorem Picsum API
         const photoContainer = document.getElementById('photoContainer');
+        const jokesContainer = document.getElementById('jokesContainer');
+        let photos = [];
+        let jokes = [];
+        let currentIndex = 0;
+        let jokeIndex = 0;
 
         // Fetch 1000 dachshund photos from Lorem Picsum API
         fetch('https://picsum.photos/v2/list?limit=1000&query=dachshund')
             .then(response => response.json())
-            .then(photos => {
-                // Loop through the fetched photos and create <img> tags to display them
-                photos.forEach(photo => {
-                    const img = document.createElement('img');
-                    img.src = photo.download_url;
-                    photoContainer.appendChild(img);
-                });
+            .then(data => {
+                photos = data;
+                // Load initial set of 20 images
+                loadImages();
             })
             .catch(error => {
                 console.error('Failed to fetch dachshund photos:', error);
             });
+
+        // Fetch dachshund jokes from JokeAPI
+        fetch('https://v2.jokeapi.dev/joke/Dachshund?type=twopart')
+            .then(response => response.json())
+            .then(data => {
+                jokes = data.jokes;
+            })
+            .catch(error => {
+                console.error('Failed to fetch dachshund jokes:', error);
+            });
+
+        // Load images in batches of 20 as user scrolls down
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                loadImages();
+            }
+        });
+
+        // Function to load images
+        function loadImages() {
+            const batch = photos.slice(currentIndex, currentIndex + 20);
+            batch.forEach(photo => {
+                const img = document.createElement('img');
+                img.src = photo.download_url;
+                photoContainer.appendChild(img);
+            });
+            currentIndex += 20;
+            // Display joke after every 20 images
+            if (currentIndex % 20 === 0 && jokeIndex < jokes.length) {
+                const joke = document.createElement('p');
+                joke.textContent = jokes[jokeIndex].setup + ' ' + jokes[jokeIndex].delivery;
+                jokesContainer.appendChild(joke);
+                jokeIndex++;
+            }
+        }
     </script>
 </body>
 </html>
