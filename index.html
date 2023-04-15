@@ -68,8 +68,10 @@
       }
       window.addEventListener('scroll', () => {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-          fetchImages(photoUrl);
-          currentIndex++;
+          for (let i = 0; i < 10; i++) {
+            fetchImages(photoUrl);
+          }
+          currentIndex += 10;
           if (currentIndex % 100 === 0 && factIndex < facts.length) {
             const fact = document.createElement('p');
             fact.innerText = facts[factIndex];
