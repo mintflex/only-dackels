@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Only Dackels </title>
+    <style>
+      body {
+        background-color: black;
+        background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+      }
+      .title-banner {
+        font-size: 36px;
+        color: white;
+        text-align: center;
+        margin: 20px;
+      }
+      .photo-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px;
+      }
+      .photo-container img {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        margin: 5px;
+      }
+      .facts-container {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        width: 200px;
+      }
+      .facts-container p {
+        margin: 0 0 10px;
+        font-style: italic;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
+    <div class="photo-container" id="photoContainer"></div>
+    <div class="facts-container" id="factsContainer"></div>
+    <script>
+      const photoContainer = document.getElementById('photoContainer');
+      const factsContainer = document.getElementById('factsContainer');
+      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
+      let photos = new Set();
+
+      async function fetchImages(url) {
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (!photos.has(data.message)) {
+            photos.add(data.message);
+            const img = document.createElement('img');
+            img.src = data.message;
+            photoContainer.appendChild(img);
+          }
+        } catch (error) {
+          console.error('Failed to fetch dachshund photos:', error);
+        }
+      }
+
+      async function initialLoad() {
+        for (let i = 0; i < 50; i++) {
+          await fetchImages(photoUrl);
+        }
+        updateFact();
+      }
+
+      function updateFact() {
+        factsContainer.innerHTML = '';
+        const fact = document.createElement('p');
+        fact.innerText = facts[Math.floor(Math.random() * facts.length)];
+        factsContainer.appendChild(fact);
+      }
+
+      window.addEventListener('scroll', async () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+          for (let i = 0; i < 20; i++) {
+            await fetchImages(photoUrl);
+          }
+          updateFact();
+        }
+      });
+
+      initialLoad();
+    </script>
+  </body>
+</html>
