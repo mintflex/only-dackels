@@ -41,13 +41,14 @@
     </style>
   </head>
   <body>
-    <div class="title-banner">Only Dackels</div>
+    <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
     <div class="photo-container" id="photoContainer"></div>
     <div class="facts-container" id="factsContainer"></div>
     <script>
       const photoContainer = document.getElementById('photoContainer');
       const factsContainer = document.getElementById('factsContainer');
-      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
+      const accessKey = 'gbO_6vpB65DfFBqcbI0Cc2pdqdi4ksEXjHgbL8_udU0';
+      const photoUrl = `https://api.unsplash.com/photos/random?query=dachshund&orientation=landscape&client_id=${accessKey}`;
       let photos = new Set();
 
       async function fetchImages(url) {
@@ -55,10 +56,11 @@
           const response = await fetch(url);
           const data = await response.json();
 
-          if (!photos.has(data.message)) {
-            photos.add(data.message);
+          const imageUrl = data.urls.regular;
+          if (!photos.has(imageUrl)) {
+            photos.add(imageUrl);
             const img = document.createElement('img');
-            img.src = data.message;
+            img.src = imageUrl;
             photoContainer.appendChild(img);
           }
         } catch (error) {
@@ -67,7 +69,7 @@
       }
 
       async function initialLoad() {
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 100; i++) {
           await fetchImages(photoUrl);
         }
         updateFact();
