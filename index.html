@@ -41,7 +41,7 @@
     </style>
   </head>
   <body>
-    <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
+    <div class="title-banner">Dackels!</div>
     <div class="photo-container" id="photoContainer"></div>
     <div class="facts-container" id="factsContainer"></div>
     <script>
@@ -51,9 +51,9 @@
       const photoUrl = `https://api.unsplash.com/photos/random?query=dachshund&orientation=landscape&client_id=${accessKey}`;
       let photos = new Set();
 
-      async function fetchImages(url) {
+      async function fetchImages() {
         try {
-          const response = await fetch(url);
+          const response = await fetch(photoUrl);
           const data = await response.json();
 
           const imageUrl = data.urls.regular;
@@ -68,13 +68,6 @@
         }
       }
 
-      async function initialLoad() {
-        for (let i = 0; i < 100; i++) {
-          await fetchImages(photoUrl);
-        }
-        updateFact();
-      }
-
       function updateFact() {
         factsContainer.innerHTML = '';
         const fact = document.createElement('p');
@@ -82,16 +75,30 @@
         factsContainer.appendChild(fact);
       }
 
-      window.addEventListener('scroll', async () => {
+      let refreshInterval = setInterval(() => {
+        fetchImages();
+        updateFact();
+      }, 5000);
+
+      window.addEventListener('scroll', () => {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
           for (let i = 0; i < 20; i++) {
-            await fetchImages(photoUrl);
+            fetchImages();
           }
           updateFact();
         }
       });
 
-      initialLoad();
+      // Stop auto-refresh when the user scrolls
+      window.addEventListener('scroll', () => {
+        clearInterval(refreshInterval);
+      }, { once: true });
+
+      // Load initial images
+      for (let i = 0; i < 100; i++) {
+        fetchImages();
+      }
+      updateFact();
     </script>
   </body>
 </html>
