@@ -26,39 +26,17 @@ html
         object-fit: cover;
         margin: 5px;
       }
-      .facts-container {
-        position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0.8);
-        width: 200px;
-      }
-      .facts-container p {
-        margin: 0 0 10px;
-        font-style: italic;
-        color: #666;
-      }
     </style>
   </head>
   <body>
     <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
     <div class="photo-container" id="photoContainer"></div>
-    <div class="facts-container" id="factsContainer"></div>
     <script>
       const photoContainer = document.getElementById('photoContainer');
-      const factsContainer = document.getElementById('factsContainer');
+
       const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
+
       let photos = new Set();
-      
-      const facts = [
-        "Why did the Dackel cross the road? To get to the other sausage!",
-        "Why do Dackels love to race? Because they're always wiener!",
-        "How does a Dackel stop a computer virus? By using wiener-ware!",
-        "Why did the Dackel sit in the shade? Because it was a hot dog!",
-        "Why did the Dackel become a detective? To solve dog gone mysteries!",
-        "How does a Dackel make fire? By rubbing two sausages together!"
-      ];
 
       async function fetchImages(url) {
         try {
@@ -80,22 +58,17 @@ html
         for (let i = 0; i < 30; i++) {
           await fetchImages(photoUrl);
         }
-        updateFact();
-      }
-
-      function updateFact() {
-        factsContainer.innerHTML = '';
-        const fact = document.createElement('p');
-        fact.innerText = facts[Math.floor(Math.random() * facts.length)];
-        factsContainer.appendChild(fact);
       }
 
       window.addEventListener('scroll', async () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && photos.size < 5000) {
+        if (
+          window.innerHeight + window.scrollY >=
+            document.body.offsetHeight - 100 &&
+          photos.size < 5000
+        ) {
           for (let i = 0; i < 10; i++) {
             await fetchImages(photoUrl);
           }
-          updateFact();
         }
       });
 
