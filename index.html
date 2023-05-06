@@ -33,10 +33,9 @@ html
     <div class="photo-container" id="photoContainer"></div>
     <script>
       const photoContainer = document.getElementById('photoContainer');
+      const photoUrl = 'https://dog.ceo/api/breed/dachshund/images/random';
 
-      const photoUrl = `https://dog.ceo/api/breed/dachshund/images/random`;
-
-      let photos = new Set();
+      const photos = new Set();
 
       async function fetchImages(url) {
         try {
@@ -60,19 +59,25 @@ html
         }
       }
 
-      window.addEventListener('scroll', async () => {
-        if (
-          window.innerHeight + window.scrollY >=
-            document.body.offsetHeight - 100 &&
-          photos.size < 5000
-        ) {
-          for (let i = 0; i < 10; i++) {
-            await fetchImages(photoUrl);
-          }
-        }
-      });
+      function createObserver() {
+        const observer = new IntersectionObserver(async (entries) => {
+          const [entry] = entries;
 
-      initialLoad();
+          if (entry.isIntersecting && photos.size < 5000) {
+            for (let i = 0; i < 10; i++) {
+              await fetchImages(photoUrl);
+            }
+          }
+        });
+
+        const sentinel = document.createElement('div');
+        sentinel.style.width = '1px';
+        sentinel.style.height = '1px';
+        photoContainer.appendChild(sentinel);
+        observer.observe(sentinel);
+      }
+
+      initialLoad().then(() => createObserver());
     </script>
   </body>
 </html>
