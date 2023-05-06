@@ -31,10 +31,10 @@ html
   <body>
     <div class="title-banner">Only Dackels - Infinite Dachshund Photos</div>
     <div class="photo-container" id="photoContainer"></div>
+
     <script>
       const photoContainer = document.getElementById('photoContainer');
       const photoUrl = 'https://dog.ceo/api/breed/dachshund/images/random';
-
       const photos = new Set();
 
       async function fetchImages(url) {
@@ -42,7 +42,7 @@ html
           const response = await fetch(url);
           const data = await response.json();
 
-          if (!photos.has(data.message) && photos.size < 5000) {
+          if (!photos.has(data.message)) {
             photos.add(data.message);
             const img = document.createElement('img');
             img.src = data.message;
@@ -63,16 +63,19 @@ html
         const observer = new IntersectionObserver(async (entries) => {
           const [entry] = entries;
 
-          if (entry.isIntersecting && photos.size < 5000) {
+          if (entry.isIntersecting) {
+            observer.unobserve(entry.target);
             for (let i = 0; i < 10; i++) {
               await fetchImages(photoUrl);
             }
+            observer.observe(entry.target);
           }
         });
 
         const sentinel = document.createElement('div');
         sentinel.style.width = '1px';
         sentinel.style.height = '1px';
+        sentinel.style.margin = '5px';
         photoContainer.appendChild(sentinel);
         observer.observe(sentinel);
       }
